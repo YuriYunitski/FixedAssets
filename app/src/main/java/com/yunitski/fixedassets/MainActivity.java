@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.content.Context;
@@ -40,7 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, ChangeDialog.Communicator {
 
     private SurfaceView surfaceView;
     private BarcodeDetector barcodeDetector;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         position = findViewById(R.id.position);
         mSwitch = findViewById(R.id.switch1);
         mSwitch.setChecked(true);
+        barcodeText.setOnClickListener(this);
 
         initialiseDetectorsAndSources();
     }
@@ -185,6 +187,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 break;
+            case R.id.barcode_text:
+                //Toast.makeText(getApplicationContext(), "wow", Toast.LENGTH_SHORT).show();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                ChangeDialog changeDialog = new ChangeDialog();
+                changeDialog.show(fragmentManager, "dialog");
+                break;
         }
     }
 private void saveFA(String data){
@@ -216,4 +224,10 @@ String fileName = "FixedAssets.txt";
         Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
     }
 }
+
+    @Override
+    public void onDialogMessage(String message) {
+        barcodeText.setText(message);
+        barcodeData = message;
+    }
 }
