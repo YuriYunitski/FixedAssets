@@ -3,6 +3,7 @@ package com.yunitski.fixedassets;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String barcodeData;
     Button apply;
     ImageButton reply;
+    Switch mSwitch;
 
 
     @Override
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         reply = findViewById(R.id.reply);
         reply.setOnClickListener(this);
         position = findViewById(R.id.position);
+        mSwitch = findViewById(R.id.switch1);
+        mSwitch.setChecked(true);
 
         initialiseDetectorsAndSources();
     }
@@ -127,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             barcodeData = barcodes.valueAt(0).displayValue;
                             barcodeText.setText(barcodeData);
                             barcodeText.setTextColor(Color.parseColor("#808080"));
+                            if (mSwitch.isChecked()) {
+                                ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_MUSIC, 150);
+                                toneGen1.startTone(ToneGenerator.TONE_SUP_PIP, 150);
+                            }
                         }
                     });
                 }
