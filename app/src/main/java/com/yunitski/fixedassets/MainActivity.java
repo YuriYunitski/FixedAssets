@@ -47,12 +47,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private TextView barcodeText;
+    private TextView barcodeText, two;
     private EditText position;
     private String barcodeData;
     Button apply;
     ImageButton reply;
     Switch mSwitch;
+    int clickCount;
 
 
     @Override
@@ -69,7 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSwitch = findViewById(R.id.switch1);
         mSwitch.setChecked(true);
         barcodeText.setOnClickListener(this);
-
+        two = findViewById(R.id.two);
+        two.setOnClickListener(this);
+        clickCount = 0;
         initialiseDetectorsAndSources();
     }
 
@@ -188,10 +191,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.barcode_text:
-                //Toast.makeText(getApplicationContext(), "wow", Toast.LENGTH_SHORT).show();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 ChangeDialog changeDialog = new ChangeDialog();
                 changeDialog.show(fragmentManager, "dialog");
+                break;
+            case R.id.two:
+                clickCount++;
+                if (clickCount == 5){
+                    startActivity(new Intent(this, MainActivity2.class));
+                    clickCount = 0;
+                }
                 break;
         }
     }
