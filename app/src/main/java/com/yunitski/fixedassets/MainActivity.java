@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private TextView barcodeText, two;
+    private TextView barcodeText, two, justScanned;
     private EditText position;
     private String barcodeData;
     Button apply;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         two = findViewById(R.id.two);
         two.setOnClickListener(this);
         clickCount = 0;
+        justScanned = findViewById(R.id.just_scanned);
         initialiseDetectorsAndSources();
     }
 
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 barcodeText.setTextColor(Color.parseColor("#00ff00"));
+                justScanned.setText(barcodeData);
                 break;
             case R.id.reply:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
