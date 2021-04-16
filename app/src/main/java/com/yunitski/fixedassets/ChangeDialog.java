@@ -58,7 +58,7 @@ public class ChangeDialog extends DialogFragment implements View.OnClickListener
 
     }
 
-    interface Communicator {
+    public interface Communicator {
         void onDialogMessage(String message);
     }
 }

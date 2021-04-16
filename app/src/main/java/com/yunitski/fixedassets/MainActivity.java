@@ -1,22 +1,15 @@
 package com.yunitski.fixedassets;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.SparseArray;
@@ -29,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -47,13 +39,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BarcodeDetector barcodeDetector;
     private CameraSource cameraSource;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    private TextView barcodeText, two, justScanned;
+    private TextView barcodeText, two, justScanned, count;
     private EditText position;
     private String barcodeData;
     Button apply;
     ImageButton reply;
-    Switch mSwitch;
+    Switch mSwitch, pathS;
     int clickCount;
+    static int counter;
+    ImageButton reNew, more, less;
 
 
     @Override
@@ -69,11 +63,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         position = findViewById(R.id.position);
         mSwitch = findViewById(R.id.switch1);
         mSwitch.setChecked(true);
+        pathS = findViewById(R.id.show_path);
+        pathS.setChecked(true);
         barcodeText.setOnClickListener(this);
         two = findViewById(R.id.two);
         two.setOnClickListener(this);
         clickCount = 0;
         justScanned = findViewById(R.id.just_scanned);
+        more = findViewById(R.id.more_btn);
+        less = findViewById(R.id.less_btn);
+        reNew = findViewById(R.id.renew_btn);
+        more.setOnClickListener(this);
+        less.setOnClickListener(this);
+        reNew.setOnClickListener(this);
+        count = findViewById(R.id.tv_count);
+        counter = 0;
+        count.setText(""+ counter);
         initialiseDetectorsAndSources();
     }
 
@@ -181,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 barcodeText.setTextColor(Color.parseColor("#00ff00"));
                 justScanned.setText(barcodeData);
+                counter += 1;
+                count.setText("" + counter);
                 break;
             case R.id.reply:
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -203,6 +210,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(new Intent(this, MainActivity2.class));
                     clickCount = 0;
                 }
+                break;
+            case R.id.more_btn:
+                counter += 1;
+                count.setText("" + counter);
+                break;
+            case R.id.less_btn:
+                if (counter > 0){
+                    counter -= 1;
+                    count.setText("" + counter);
+                }
+                break;
+            case R.id.renew_btn:
+                counter = 0;
+                count.setText(""+counter);
                 break;
         }
     }
@@ -229,7 +250,9 @@ String fileName = "FixedAssets.txt";
         byte[] dataF = data.getBytes();
         os.write(dataF);
         os.close();
-        Toast.makeText(this, barcodeData + " Saved in directory: " + filesDir, Toast.LENGTH_LONG).show();
+        if (pathS.isChecked()) {
+            Toast.makeText(this, barcodeData + " Saved in directory: " + filesDir, Toast.LENGTH_LONG).show();
+        }
     } catch (IOException e) {
         e.printStackTrace();
         Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
